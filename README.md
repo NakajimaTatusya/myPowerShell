@@ -1,0 +1,2 @@
+# myPowerShell
+雑多なPowerShellスクリプト集、とにかく作ったものをまとめる
