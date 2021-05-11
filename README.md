@@ -10,7 +10,7 @@
 | dsk_scale.ps1 | Windows10 拡大縮小とレイアウト。テキスト、アプリ、その他の項目のサイズを変更する |
 | EnableTetheringWhenConnectToCompanyNetwork.bat | 自分のラップトップがWiFiに接続されていたら、モバイルホットスポットを起動する |
 | EnableTetheringWhenConnectToCompanyNetwork.ps1 | 自分のラップトップがWiFiに接続されていたら、モバイルホットスポットを起動する |
-| get_wifi_ssid.ps1 | WiFiアクセスポイントのSSIDを一覧ひょじする |
+| get_wifi_ssid.ps1 | WiFiアクセスポイントのSSIDを一覧表示する |
 | RunAsAdministrator.ps1 | 指定されたスクリプトを管理者権限で実行する |
 | TestRunAsAdministrator.ps1 | ノートパッドを管理者権限で実行し、hostsファイルを編集する |
 | scp_upload.ps1 | Posh-SSH を使用してファイルをアップロードする |
