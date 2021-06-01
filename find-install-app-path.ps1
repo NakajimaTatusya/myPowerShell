@@ -1,10 +1,12 @@
-Function Get-Software {
+Function Get-SoftwareInstallPath {
     [OutputType('System.Software.Inventory')]
     [Cmdletbinding()] 
 
     Param( 
         [Parameter(ValueFromPipeline = $True, ValueFromPipelineByPropertyName = $True)] 
-        [String[]]$Computername = $env:COMPUTERNAME
+        [String[]]$Computername = $env:COMPUTERNAME,
+        [Parameter(ValueFromPipeline = $True, ValueFromPipelineByPropertyName = $True)] 
+        [String]$Findname = ""
     )         
 
     Begin {
@@ -35,6 +37,9 @@ Function Get-Software {
                             Try {
                                 $thisSubKey = $reg.OpenSubKey($thisKey)
                                 $DisplayName = $thisSubKey.getValue("DisplayName")
+                                if ($DisplayName -notmatch $Findname) {
+                                    Continue
+                                }
                                 
                                 If ($DisplayName -AND $DisplayName -notmatch '^Update  for|rollup|^Security Update|^Service Pack|^HotFix') {
                                     $Date = $thisSubKey.GetValue('InstallDate')
@@ -123,4 +128,6 @@ Function Get-Software {
         } 
     } 
 }
-Get-Software -Computername $env:COMPUTERNAME | Where-Object DisplayName -Like "Microsoft Edge"
+
+#Get-Software -Computername $env:COMPUTERNAME | Where-Object DisplayName -Like "Microsoft Edge"
+Get-SoftwareInstallPath -Computername $env:COMPUTERNAME -Findname "Microsoft Edge"
