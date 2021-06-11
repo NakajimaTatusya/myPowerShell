@@ -20,3 +20,5 @@
 | ssh_bash_command.bat | SSH接続してコマンドを実行して終了するバッチ(Windows10 1803以降) |
 | output_eventlog.ps1 | Windows Application Event log をCSV出力 |
 | find-install-app-path.ps1 | アプリケーションがインストールされた場所を取得する |
+| Get-RemoteOfficeVersion.ps1 | オリジナル。get-officeinstallpath.ps1の元ネタ。前半の処理がどこへも戻されていないので多分そののままでは使えない。 |
+| get-officeinstallpath.ps1 | Get-RemoteOfficeVersion.ps1そのままだと使えないので、てを加えて不要なものをそぎ落とした。 |
