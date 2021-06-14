@@ -2,7 +2,7 @@
 スペシャルフォルダ以外のフォルダのフルパスを指定
 #>
 $IndividualTarget = @(
-    "C:\Users\z00h230862\OneDrive - Ricoh\00-アカウント情報"
+    "C:\temp"
 )
 
 <#
