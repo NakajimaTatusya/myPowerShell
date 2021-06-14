@@ -57,6 +57,7 @@ foreach($name in $names)
     if($path = [Environment]::GetFolderPath($name)){
         if ($TargetAlias.Contains($name)) {
             $Informations += Get-FileCountAndSize -Path $path -Scale MB
+            Get-ChildItem -Path $path -Recurse | Where-Object {$_.PSIsContainer} | ForEach-Object {$Informations += Get-FileCountAndSize -Path $_.FullName -Scale MB}
         }
     }
 }
@@ -64,8 +65,12 @@ if ($TargetAlias.Contains("Download")) {
     $Informations += Get-FileCountAndSize -Path (New-Object -ComObject Shell.Application).NameSpace('shell:Downloads').Self.Path -Scale MB
 }
 foreach ($path in $IndividualTarget) {
+    # recurse
     $Informations += Get-FileCountAndSize -Path $path -Scale MB
+    Get-ChildItem -Path $path -Recurse | Where-Object {$_.PSIsContainer} | ForEach-Object {$Informations += Get-FileCountAndSize -Path $_.FullName -Scale MB}
+    #$Informations += Get-FileCountAndSize -Path $path -Scale MB
 }
+
 
 # 表を出力
 $Informations | ForEach-Object {[PSCustomObject]$_} `
