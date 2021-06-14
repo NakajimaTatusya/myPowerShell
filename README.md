@@ -22,3 +22,5 @@
 | find-install-app-path.ps1 | アプリケーションがインストールされた場所を取得する |
 | Get-RemoteOfficeVersion.ps1 | オリジナル。get-officeinstallpath.ps1の元ネタ。前半の処理がどこへも戻されていないので多分そののままでは使えない。 |
 | get-officeinstallpath.ps1 | Get-RemoteOfficeVersion.ps1そのままだと使えないので、てを加えて不要なものをそぎ落とした。 |
+| get-folderfile-information-config.ps1 | 対象のパスを指定する。Windowsのスペシャルフォルダはコメント(#)記号を消すと有効化される。 |
+| get-folderfile-information.ps1 | get-folderfile-information-config.ps1にしていたされたパスのフォルダとファイルの情報を収集してCSV出力する。 |
