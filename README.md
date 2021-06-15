@@ -24,3 +24,4 @@
 | get-officeinstallpath.ps1 | Get-RemoteOfficeVersion.ps1そのままだと使えないので、てを加えて不要なものをそぎ落とした。 |
 | get-folderfile-information-config.ps1 | 対象のパスを指定する。Windowsのスペシャルフォルダはコメント(#)記号を消すと有効化される。 |
 | get-folderfile-information.ps1 | get-folderfile-information-config.ps1にしていたされたパスのフォルダとファイルの情報を収集してCSV出力する。 |
+| disableUAC.ps1 | UACを無効にする。再起動が必要。 |
