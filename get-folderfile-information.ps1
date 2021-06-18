@@ -17,7 +17,7 @@ function Get-FileCountAndSize {
             valuefrompipeline = 1,
             valuefrompipelinebypropertyname = 1)]
         [string[]]
-        $Path = $null,
+        $Path,
 
         [parameter(
             position = 1,
@@ -32,7 +32,7 @@ function Get-FileCountAndSize {
         [decimal] $totalFileSize = 0
         $FileInfoObj = @{}
         $Path `
-        | %{
+        | ForEach-Object{
             if (Test-Path $_) {
                 $FileInfoObj = New-Object PSObject | Select-Object FullPath,TotalFolderCount,TotalFileCount,TotalSize
                 $FileInfoObj.FullPath = $_
@@ -57,7 +57,11 @@ foreach($name in $names)
     if($path = [Environment]::GetFolderPath($name)){
         if ($TargetAlias.Contains($name)) {
             $Informations += Get-FileCountAndSize -Path $path -Scale MB
-            Get-ChildItem -Path $path -Recurse | Where-Object {$_.PSIsContainer} | ForEach-Object {$Informations += Get-FileCountAndSize -Path $_.FullName -Scale MB}
+            Get-ChildItem -Path $path -Recurse | Where-Object {$_.PSIsContainer} | ForEach-Object {
+                if (![string]::IsNullOrEmpty($_.FullName)) {
+                    $Informations += Get-FileCountAndSize -Path $_.FullName -Scale MB
+                }
+            }
         }
     }
 }
@@ -65,10 +69,15 @@ if ($TargetAlias.Contains("Download")) {
     $Informations += Get-FileCountAndSize -Path (New-Object -ComObject Shell.Application).NameSpace('shell:Downloads').Self.Path -Scale MB
 }
 foreach ($path in $IndividualTarget) {
+    if (![string]::IsNullOrEmpty($path)) {
+        $Informations += Get-FileCountAndSize -Path $path -Scale MB
+    }
     # recurse
-    $Informations += Get-FileCountAndSize -Path $path -Scale MB
-    Get-ChildItem -Path $path -Recurse | Where-Object {$_.PSIsContainer} | ForEach-Object {$Informations += Get-FileCountAndSize -Path $_.FullName -Scale MB}
-    #$Informations += Get-FileCountAndSize -Path $path -Scale MB
+    Get-ChildItem -Path $path -Recurse | Where-Object {$_.PSIsContainer} | ForEach-Object {
+        if (![string]::IsNullOrEmpty($_.FullName)) {
+            $Informations += Get-FileCountAndSize -Path $_.FullName -Scale MB
+        }
+    }
 }
 
 
@@ -80,10 +89,12 @@ $Informations | ForEach-Object {[PSCustomObject]$_} `
 @{label='TotalFileCount';expression={$_.TotalFileCount};width=20;alignment='left';}, `
 @{label='TotalFileSize';expression={$_.TotalSize};width=20;alignment='left';}
 
-# Json を出力
-ConvertTo-Json $Informations
-
+# OutPut CSV.
 $Informations | Export-Csv -Path ce_folder_file_info.csv -Encoding Default -NoTypeInformation
+
+# Json を出力
+# ConvertTo-Json $Informations
+
 
 <#
 1次元のオブジェクト配列はJsonにすると、配列ではなくなるので、2番目のConvertTo-Jsonのような使い方をすること
