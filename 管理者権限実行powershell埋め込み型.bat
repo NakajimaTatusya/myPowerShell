@@ -1,3 +1,4 @@
+REM UACを無効にしておくと管理者実行確認ダイアログが出力されない。
 @(echo '> NUL
 echo off)
 NET SESSION > NUL 2>&1
