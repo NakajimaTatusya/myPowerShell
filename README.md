@@ -25,3 +25,5 @@
 | get-folderfile-information-config.ps1 | 対象のパスを指定する。Windowsのスペシャルフォルダはコメント(#)記号を消すと有効化される。 |
 | get-folderfile-information.ps1 | get-folderfile-information-config.ps1にしていたされたパスのフォルダとファイルの情報を収集してCSV出力する。 |
 | disableUAC.ps1 | UACを無効にする。再起動が必要。 |
+| 管理者権限実行powershell埋め込み型.bat | 管理者権限でPowerShellを実行。 |
+| Setting-WinRM-for-WIn10.ps1 | Windows10クライアントへWinRM設定を行う。 |
