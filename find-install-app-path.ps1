@@ -1,31 +1,30 @@
+
 Function Get-SoftwareInstallPath {
     [OutputType('System.Software.Inventory')]
     [Cmdletbinding()] 
-
     Param( 
         [Parameter(ValueFromPipeline = $True, ValueFromPipelineByPropertyName = $True)] 
         [String[]]$Computername = $env:COMPUTERNAME,
         [Parameter(ValueFromPipeline = $True, ValueFromPipelineByPropertyName = $True)] 
         [String]$Findname = ""
-    )         
+    )
 
     Begin {
     }
 
-    Process {     
-        ForEach ($Computer in  $Computername) { 
+    Process {
+        ForEach ($Computer in  $Computername) {
             If (Test-Connection -ComputerName  $Computer -Count  1 -Quiet) {
-                $Paths = @("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall", "SOFTWARE\\Wow6432node\\Microsoft\\Windows\\CurrentVersion\\Uninstall")         
-                ForEach ($Path in $Paths) { 
+                $Paths = @("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall", "SOFTWARE\\Wow6432node\\Microsoft\\Windows\\CurrentVersion\\Uninstall")
+                ForEach ($Path in $Paths) {
                     Write-Verbose  "Checking Path: $Path"
-                    #  Create an instance of the Registry Object and open the HKLM base key 
-                    Try { 
-                        $reg = [microsoft.win32.registrykey]::OpenRemoteBaseKey('LocalMachine', $Computer, 'Registry64') 
+                    Try {
+                        $reg = [microsoft.win32.registrykey]::OpenRemoteBaseKey('LocalMachine', $Computer, 'Registry64')
                     }
-                    Catch { 
-                        Write-Error $_ 
-                        Continue 
-                    } 
+                    Catch {
+                        Write-Error $_
+                        Continue
+                    }
 
                     Try {
                         $regkey = $reg.OpenSubKey($Path)
@@ -40,7 +39,7 @@ Function Get-SoftwareInstallPath {
                                 if ($DisplayName -notmatch $Findname) {
                                     Continue
                                 }
-                                
+
                                 If ($DisplayName -AND $DisplayName -notmatch '^Update  for|rollup|^Security Update|^Service Pack|^HotFix') {
                                     $Date = $thisSubKey.GetValue('InstallDate')
                                     If ($Date) {
@@ -57,42 +56,42 @@ Function Get-SoftwareInstallPath {
 
                                     $Publisher = Try {
                                         $thisSubKey.GetValue('Publisher').Trim()
-                                    } 
+                                    }
                                     Catch {
                                         $thisSubKey.GetValue('Publisher')
                                     }
 
                                     $Version = Try {
                                         $thisSubKey.GetValue('DisplayVersion').TrimEnd(([char[]](32, 0)))
-                                    } 
+                                    }
                                     Catch {
                                         $thisSubKey.GetValue('DisplayVersion')
                                     }
 
                                     $UninstallString = Try {
                                         $thisSubKey.GetValue('UninstallString').Trim()
-                                    } 
+                                    }
                                     Catch {
                                         $thisSubKey.GetValue('UninstallString')
                                     }
 
                                     $InstallLocation = Try {
                                         $thisSubKey.GetValue('InstallLocation').Trim()
-                                    } 
+                                    }
                                     Catch {
                                         $thisSubKey.GetValue('InstallLocation')
                                     }
 
                                     $InstallSource = Try {
                                         $thisSubKey.GetValue('InstallSource').Trim()
-                                    } 
+                                    }
                                     Catch {
                                         $thisSubKey.GetValue('InstallSource')
                                     }
 
                                     $HelpLink = Try {
                                         $thisSubKey.GetValue('HelpLink').Trim()
-                                    } 
+                                    }
                                     Catch {
                                         $thisSubKey.GetValue('HelpLink')
                                     }
@@ -114,20 +113,21 @@ Function Get-SoftwareInstallPath {
                             }
                             Catch {
                                 Write-Warning "$Key : $_"
-                            }   
+                            }
                         }
                     }
-                    Catch {}   
-                    $reg.Close() 
-                }                  
+                    Catch {}
+                    $reg.Close()
+                }
                 return $ObjectArray
             }
             Else {
                 Write-Error  "$($Computer): リモートシステムに到達できませんでした。"
             }
-        } 
+        }
     } 
 }
 
 #Get-Software -Computername $env:COMPUTERNAME | Where-Object DisplayName -Like "Microsoft Edge"
-Get-SoftwareInstallPath -Computername $env:COMPUTERNAME -Findname "Microsoft Edge"
+#Get-SoftwareInstallPath -Computername $env:COMPUTERNAME -Findname "Acrobat"
+#Get-SoftwareInstallPath -Computername $env:COMPUTERNAME -Findname "Microsoft Edge"
