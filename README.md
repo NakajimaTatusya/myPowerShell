@@ -27,3 +27,5 @@
 | disableUAC.ps1 | UACを無効にする。再起動が必要。 |
 | 管理者権限実行powershell埋め込み型.bat | 管理者権限でPowerShellを実行。 |
 | Setting-WinRM-for-WIn10.ps1 | Windows10クライアントへWinRM設定を行う。 |
+| find_macaddress_from_ipv4.ps1 | IPv4/24範囲にPingを送信ARPからMACアドレスを収集してCSV出力 |
+| find_macaddress_from_ipv4.bat | find_macaddress_from_ipv4.ps1を起動するバッチ |
