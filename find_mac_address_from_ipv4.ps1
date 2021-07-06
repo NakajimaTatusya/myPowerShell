@@ -78,6 +78,24 @@ process {
         if ($Ping.StatusCode -eq 0)
         {
             Write-Verbose 'Success Ping.'
+            # MAC Address をリモートで取得する処理。対象PCのクレデンシャルが無いとだめなのでここでは無理。
+            #getmac.exe /s $hostname
+            #Try {
+            #    Get-WmiObject -ClassName Win32_NetworkAdapterConfiguration -Filter "IPEnabled='True'" -ComputerName $ip4.IPAddressToString | 
+            #        Select-Object -Property MACAddress, Description | ForEach-Object {
+            #            Write-Host ("MAC ADDRESS {0}" -f $_.MACAddress)
+            #            $outArray += [pscustomobject] @{
+            #                IPv4_ADDRESS=$Network.$IP;
+            #                MACAddress=$_.MACAddress;
+            #                Description=$_.Description
+            #            }
+            #        }
+            #}
+            #Catch {
+            #    Write-Host ("エラー発生:{0}" -f $_)
+            #    $windows = 0
+            #    Continue
+            #}
             $outArray += [pscustomobject] @{
                 HOSTNAME=$hostname;
                 IPv4_ADDRESS=$ip4.IPAddressToString;
