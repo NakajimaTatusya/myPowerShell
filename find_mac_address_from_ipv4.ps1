@@ -9,7 +9,7 @@ author: tatsuya.nakajima@jp.ricoh.com
 #>
 [CmdletBinding()]
 Param (
-    [string]$Network = '10.22.129',
+    [string]$Network = '192.168.1',
     [int]$IPStart = '1',
     [int]$IPEnd = '255',
     [switch]$PingStatusErrorOutput
