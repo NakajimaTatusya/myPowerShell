@@ -128,8 +128,9 @@ end {
         ForEach ($IP in $outArray)
         {
             if ($line -match $IP.IPv4_ADDRESS) {
-                $line -match "([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})"
-                $IP.MACAddress = $Matches[0]
+                if ($line -match "([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})") {
+                    $IP.MACAddress = $Matches[0]
+                }
             }
         }
     }
