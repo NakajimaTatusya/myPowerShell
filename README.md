@@ -1,6 +1,6 @@
 # myPowerShell
 
-雑多なPowerShellスクリプト集、とにかく作ったものをまとめる
+PowerShellスクリプト集
 
 ## 一覧
 
