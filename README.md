@@ -29,3 +29,4 @@ PowerShellスクリプト集
 | Setting-WinRM-for-WIn10.ps1 | Windows10クライアントへWinRM設定を行う。 |
 | find_macaddress_from_ipv4.ps1 | IPv4/24範囲にPingを送信ARPからMACアドレスを収集してCSV出力 |
 | find_macaddress_from_ipv4.bat | find_macaddress_from_ipv4.ps1を起動するバッチ |
+| async_ping.ps1 | PINGを非同期で行う。処理速度が早い。 |
