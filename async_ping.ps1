@@ -38,6 +38,10 @@ IPStatus 列挙型
 | TtlReassemblyTimeExceeded | 11014 | 伝送用に分割されたパケットのフラグメントが、再アセンブルの割り当て時間内にすべて受信されなかったため、ICMP エコー要求は失敗しました。 RFC 2460 では、すべてのパケットのフラグメントは、60 秒以内に受信される必要があると指定されています。 |
 | Unknown | -1 | 不明な理由のために ICMP エコー要求は失敗しました。 |
 | UnrecognizedNextHeader | 11043 | 認識される値が Next Header フィールドに含まれていないため、ICMP エコー要求は失敗しました。 Next Header フィールドは、拡張ヘッダーの種類 (存在する場合) や、TCP か UDP などの IP 層より上のプロトコルを示します。 |
+
+IPv4からホスト名
+https://docs.microsoft.com/en-us/dotnet/api/system.net.dns.gethostentryasync?view=net-5.0
+
 #>
 [CmdletBinding()]
 param (
@@ -50,6 +54,7 @@ param (
 begin {
     # Debug出力有効
     $DebugPreference = "Continue"
+    $retval = @()
 }
 
 process {
@@ -77,6 +82,7 @@ process {
                 try {
                     # Ping用のアセンブリを追加
                     Add-Type -AssemblyName System.Net.NetworkInformation
+                    Add-Type -AssemblyName System.Net.Dns
                 }
                 catch { }
 
@@ -133,7 +139,7 @@ process {
                 $private:output = New-Object -TypeName PSObject -Property $obj
 
                 # 結果をホストに返します
-                $output
+                $retval += $output
             }
 
             # パイプラインを破棄する
@@ -150,5 +156,23 @@ process {
 }
 
 End {
-    $output
+    try {
+        Add-Type -AssemblyName System.Net
+    }
+    catch { }
+    foreach ($element in $retval) {
+        Write-Output $element.address.IPAddressToString
+        # IP からホスト名を取得するのも時間かかるから非同期にしたほうがいい
+        if ($element.status -eq "Success") {
+            $hostname = ""
+            try {
+                [System.Net.IPHostEntry]$he = [System.Net.Dns]::GetHostEntry($element.address)
+                $hostname = $he.HostName
+            }
+            catch {
+                $hostname = $_.Exception.Message
+            }
+            Write-Output $hostname
+        }
+    }
 }
