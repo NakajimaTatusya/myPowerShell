@@ -235,8 +235,8 @@ function Get-FileCountAndSize {
                     $totalFileCount++
                 }
                 $FileInfoObj.TotalFileCount = $totalFileCount
-                $totalSize = [decimal]("{0:N4}" -f ($totalFileSize / "1{0}" -f $scale))
-                $FileInfoObj.TotalSize = "{0}{1}" -f $totalSize,$scale
+                $totalSize = [decimal]("{0:N2}" -f ($totalFileSize / "1{0}" -f $scale))
+                $FileInfoObj.TotalSize = "{0}{1}" -f $totalSize, $scale
                 $FileInfoObj.TotalFolderCount = (Get-ChildItem -Path $_ -Directory -Recurse | Measure-Object).Count
             }
         }
