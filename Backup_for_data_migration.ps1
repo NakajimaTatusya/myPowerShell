@@ -230,7 +230,7 @@ function Get-FileCountAndSize {
                 $FileInfoObj = New-Object PSObject | Select-Object SourcePath,DestinationPath,TotalFolderCount,TotalFileCount,TotalSize
                 $FileInfoObj.SourcePath = $_
                 $FileInfoObj.DestinationPath = $_ -replace '^[A-Z]:', $backupfoldername
-                Get-ChildItem -Path $_ -File -Recurse | ForEach-Object {
+                Get-ChildItem -Path $_ -File -Recurse -Force | ForEach-Object {
                     $totalFileSize += $_.Length
                     $totalFileCount++
                 }
