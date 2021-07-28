@@ -426,6 +426,7 @@ function ExecRobocopy {
 }
 
 
+LOG -LogString "start Backup for data migration. *****"
 # 設定ファイル読み込み
 $IndividualTarget = @()
 if ($confpath) {
@@ -446,8 +447,7 @@ else {
     $parentdir = Get-CurrentDirectoryPath
 }
 
-# version display
-$PSVersionTable
+LOG -LogString ("PowerShell current Version is {0}." -f $PSVersionTable.PSVersion)
 Write-Verbose $PSScriptRoot
 $Informations = @()
 $bkfldrnm = Get-BackupFolderName -ipv4 localhost
@@ -522,7 +522,7 @@ while ($userinput = (Read-Host "バックアップを開始します。よろし
     else { Write-Output "「Y」または「n」を入力してください。（大文字小文字を区別します。）" }
 }
 
-Write-Output "***** バックアップ開始 *****"
+LOG -LogString "***** バックアップ開始 *****"
 $robocopylogfile = Join-Path -Path $backupfolder -ChildPath ("{0}_robocopy.log" -f ((Get-Date -Format "yyyy-MM-dd").ToString()))
 if ($userinput -ceq "Y") {
     foreach ($item in $Informations) {
@@ -530,6 +530,7 @@ if ($userinput -ceq "Y") {
         log -LogString ("EXECUTE ROBOCOPY ResultCode={0} ResultMessage:{1} CopyFrom:[{2}] CopyTo:[{3}]" -f $resultObj.code, $resultObj.msg, $item.SourcePath, $item.DestinationPath)
     }
 }
-Write-Output "***** バックアップ終了 *****"
+LOG -LogString "***** バックアップ終了 *****"
 
+LOG -LogString "End Backup for data migration. *****"
 exit 0
