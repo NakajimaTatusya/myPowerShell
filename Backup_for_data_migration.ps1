@@ -129,8 +129,8 @@ if (!(Test-Path($backupfolder))) {
 $names = [Environment+SpecialFolder]::GetNames([Environment+SpecialFolder])
 foreach($name in $names)
 {
-    if($path = [Environment]::GetFolderPath($name)){
-        if ($TargetAlias.Contains($name)) {
+    if ($TargetAlias.Contains($name)) {
+        if($path = [Environment]::GetFolderPath($name)){
             $Informations += Get-FileCountAndSize -SourcePath $path -Scale MB -backupfoldername $backupfolder
             # Get-ChildItem -Path $path -Recurse | Where-Object {$_.PSIsContainer} | ForEach-Object {
             #     if (![string]::IsNullOrEmpty($_.FullName)) {

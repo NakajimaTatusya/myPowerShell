@@ -80,3 +80,31 @@ $Informations `
     | Select-Object -Property @{Name = '復元先'; Expression = {$_.SourcePath}}, @{Name = '合計フォルダ数'; Expression = {$_.TotalFolderCount}}, @{Name = '合計ファイル数'; Expression = {$_.TotalFileCount}}, @{Name = '合計ファイルサイズ'; Expression = {$_.TotalSize}} `
     | Export-Csv -Path $outputfile -Encoding Default -NoTypeInformation
 
+Log -LogPath $logPath -LogName $logName -LogString "***** 復元前のコピー先情報を出力しました *****"
+
+while ($userinput = (Read-Host "レストアを開始します。よろしいですか？(大文字小文字を区別します)[Y/n]")) {
+    if ($userinput -ceq "Y") { 
+        break 
+    }
+    elseif ($userinput -ceq "n") { 
+        Log -LogPath $logPath -LogName $logName -LogString "***** ユーザー操作により処理を中止します *****"
+        exit 0 
+    }
+    else { 
+        Write-Output "「Y」または「n」を入力してください。（大文字小文字を区別します）" 
+    }
+}
+
+Log -LogPath $logPath -LogName $logName -LogString "***** 復元開始 *****"
+$robocopylogfile = Join-Path -Path $informationfolder -ChildPath ("{0}_robocopy.log" -f ((Get-Date -Format "yyyy-MM-dd").ToString()))
+if ($userinput -ceq "Y") {
+    foreach ($item in $Informations) {
+        $resultObj = ExecRobocopy -src $item.SourcePath -dst $item.DestinationPath -logfile $robocopylogfile
+        Log -LogPath $logPath -LogName $logName -LogString ("EXECUTE ROBOCOPY ResultCode={0} ResultMessage:{1} CopyFrom:[{2}] CopyTo:[{3}]" -f $resultObj.code, $resultObj.msg, $item.SourcePath, $item.DestinationPath)
+    }
+}
+Log -LogPath $logPath -LogName $logName -LogString "***** 復元終了 *****"
+
+Log -LogPath $logPath -LogName $logName -LogString "End Restore for data migration. *****"
+
+exit 0
