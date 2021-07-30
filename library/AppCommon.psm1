@@ -42,14 +42,14 @@ function Get-FileCountAndSize {
                 $FileInfoObj = New-Object PSObject | Select-Object SourcePath,DestinationPath,TotalFolderCount,TotalFileCount,TotalSize
                 $FileInfoObj.SourcePath = $_
                 $FileInfoObj.DestinationPath = if ([System.String]::IsNullOrEmpty($backupfoldername)) {$_} else {$_ -replace '^[A-Z]:', $backupfoldername} 
-                Get-ChildItem -Path $_ -File -Recurse -Force | ForEach-Object {
+                Get-ChildItem -Path $_ -File -Recurse -ErrorAction "silentlycontinue" -Force | ForEach-Object {
                     $totalFileSize += $_.Length
                     $totalFileCount++
                 }
                 $FileInfoObj.TotalFileCount = $totalFileCount
                 $totalSize = [decimal]("{0:N2}" -f ($totalFileSize / "1{0}" -f $scale))
                 $FileInfoObj.TotalSize = "{0}{1}" -f $totalSize, $scale
-                $FileInfoObj.TotalFolderCount = (Get-ChildItem -Path $_ -Directory -Recurse -Force | Measure-Object).Count
+                $FileInfoObj.TotalFolderCount = (Get-ChildItem -Path $_ -Directory -Recurse -ErrorAction "silentlycontinue" -Force | Measure-Object).Count
             }
         }
         return $FileInfoObj
