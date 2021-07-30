@@ -134,7 +134,7 @@ foreach($name in $names)
 {
     if ($TargetAlias.Contains($name)) {
         if($path = [Environment]::GetFolderPath($name)){
-            $Informations += Get-FileCountAndSize -SourcePath $path -Scale MB -backupfoldername $backupfolder
+            $Informations += (Get-FileCountAndSize -SourcePath $path -Scale MB -backupfoldername $backupfolder)
             # Get-ChildItem -Path $path -Recurse | Where-Object {$_.PSIsContainer} | ForEach-Object {
             #     if (![string]::IsNullOrEmpty($_.FullName)) {
             #         $Informations += Get-FileCountAndSize -SourcePath $_.FullName -Scale MB
@@ -144,23 +144,24 @@ foreach($name in $names)
     }
 }
 if ($TargetAlias.Contains("Download")) {
-    $Informations += Get-FileCountAndSize -SourcePath (New-Object -ComObject Shell.Application).NameSpace('shell:Downloads').Self.Path `
-                                          -Scale MB -backupfoldername $backupfolder
+    $Informations += (Get-FileCountAndSize -SourcePath (New-Object -ComObject Shell.Application).NameSpace('shell:Downloads').Self.Path `
+                                  -Scale MB -backupfoldername $backupfolder)
 }
 
 # 個別フォルダ
 if ($IndividualTarget) {
-    foreach ($path in $IndividualTarget) {
-        if (![string]::IsNullOrEmpty($path)) {
-            $Informations += Get-FileCountAndSize -SourcePath $path -Scale MB -backupfoldername $backupfolder
-        }
-        # recurse
-        # Get-ChildItem -Path $path -Recurse | Where-Object {$_.PSIsContainer} | ForEach-Object {
-        #     if (![string]::IsNullOrEmpty($_.FullName)) {
-        #         $Informations += Get-FileCountAndSize -SourcePath $_.FullName -Scale MB
-        #     }
-        # }
-    }
+    $Informations += (Get-FileCountAndSize -SourcePath $IndividualTarget -Scale MB -backupfoldername $backupfolder)
+    # foreach ($path in $IndividualTarget) {
+    #     if (![string]::IsNullOrEmpty($path)) {
+    #         $Informations += Get-FileCountAndSize -SourcePath $path -Scale MB -backupfoldername $backupfolder
+    #     }
+    #     # recurse
+    #     # Get-ChildItem -Path $path -Recurse | Where-Object {$_.PSIsContainer} | ForEach-Object {
+    #     #     if (![string]::IsNullOrEmpty($_.FullName)) {
+    #     #         $Informations += Get-FileCountAndSize -SourcePath $_.FullName -Scale MB
+    #     #     }
+    #     # }
+    # }
 }
 else {
     Write-Information "個別設定フォルダは対象外となりました。##個別設定がないか、個別設定ファイルが読み込めませんでした##"
