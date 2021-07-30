@@ -35,3 +35,6 @@ PowerShellスクリプト集
 | data_migration\Restore_for_data_migration.ps1 | ROBOCOPYでバックアップをとったデータを別のPCレストアする |
 | data_migration\Restore_for_data_migration.bat | レストアPowershellスクリプトを実行する |
 | data_migration\library\AppCommon.psm1 | ROBOCOPYを使用したバックアップレストア用のライブラリ |
+| ChromeBrowserUserData\Moving_favorities_backup.bat | バックアップ実行 |
+| ChromeBrowserUserData\Moving_favorities_newChrome.ps1 | クロムブラウザのUser Data Defaultをバックアップ、リストアする |
+| ChromeBrowserUserData\Moving_favorities_restore.bat | リストア実行 |
