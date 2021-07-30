@@ -38,3 +38,4 @@ PowerShellスクリプト集
 | ChromeBrowserUserData\Moving_favorities_backup.bat | バックアップ実行 |
 | ChromeBrowserUserData\Moving_favorities_newChrome.ps1 | クロムブラウザのUser Data Defaultをバックアップ、リストアする |
 | ChromeBrowserUserData\Moving_favorities_restore.bat | リストア実行 |
+| windows_credential_manager.bat | windows 資格情報の追加、編集、削除、エクスポート/インポート GUIを呼び出すバッチコマンド |
