@@ -4,7 +4,7 @@ Param (
     [string]$settingsfile
 )
 
-Import-Module -Name .\library\AppCommon.psm1 -Force
+Import-Module -Name ..\library\AppCommon.psm1 -Force
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"

@@ -7,7 +7,7 @@ echo ############################################################
 
 cd /d %~dp0
 
-powershell -NoProfile -ExecutionPolicy Unrestricted .\Moving_favorities_newChrome.ps1
+powershell -NoProfile -ExecutionPolicy Unrestricted .\Moving_favorities_newChrome.ps1 -RESTORE
 pause
 
 exit 0

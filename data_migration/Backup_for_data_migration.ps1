@@ -30,7 +30,7 @@ param (
     [string]$confpath
 )
 
-Import-Module -Name .\library\AppCommon.psm1 -Force
+Import-Module -Name ..\library\AppCommon.psm1 -Force
 
 # Import config
 . .\backup_conf\Backup_for_data_migration_specialfolder.ps1

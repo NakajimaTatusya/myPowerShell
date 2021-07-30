@@ -3,9 +3,9 @@
     古いパソコン、または古いUserProfileから、新しいパソコン、新しいUserProfileへ、Google Chromeのお気に入り、履歴、設定情報を丸ごと移動する
 .DESCRIPTION
     Google Chromeのお気に入り、設定、履歴をバックアップしレストアする
-.PARAMETER BACKUP
-    BACKUPを指定するとGoogle Chromeのブックマーク、履歴、設定をバックアップ
-    BACKUPを指定しない場合は、バックアップしたブックマーク、履歴、設定をリストア
+.PARAMETER RESTORE
+    RESTOREを指定すると、バックアップしたブックマーク、履歴、設定をリストア
+    RESTOREを指定すると、Google Chromeのブックマーク、履歴、設定をバックアップ
 .EXAMPLE
     Moving_favorities_newChrome.ps1 -BACKUP    バックアップ処理
     Moving_favorities_newChrome.ps1            リストア処理
@@ -17,10 +17,10 @@
     Author:  Tatsuya Nakajima
     Website: https://github.com/NakajimaTatusya/myPowerShell.git
 #>
-param ([switch]$BACKUP)
+param ([switch]$RESTORE)
 
 begin {
-    Import-Module -Name .\library\AppCommon.psm1 -Force
+    Import-Module -Name ..\library\AppCommon.psm1 -Force
 
     Set-StrictMode -Version Latest
     $ErrorActionPreference = "Stop"
@@ -44,7 +44,30 @@ process {
         exit -1
     }
 
-    if ($BACKUP) {
+    if ($RESTORE) {
+        # Google Chrome のブックマーク、履歴、設定をリストア
+        while ($userinput = (Read-Host "リストアを開始します。よろしいですか？(大文字小文字を区別します)[Y/n]")) {
+            if ($userinput -ceq "Y") {
+                break 
+            }
+            elseif ($userinput -ceq "n") { 
+                Log -LogPath $logPath -LogName $logName -LogString "***** ユーザー操作により処理を中止します *****"
+                exit 1
+            }
+            else { 
+                Write-Output "「Y」または「n」を入力してください。（大文字小文字を区別します）" 
+            }
+        }
+
+        Log -LogPath $logPath -LogName $logName -LogString "***** リストア開始 *****"
+        $bkfolder = (Get-ChildItem -Path (Join-Path (Get-CurrentDirectoryPath) $gcUserDataBackupPath) `
+                    | Sort-Object -Property Name -Descending | Select-Object FullName -First 1)
+        $robocopylogfile = Join-Path -Path $logPath -ChildPath ("re_{0}_robocopy.log" -f ((Get-Date -Format "yyyy-MM-dd").ToString()))
+        $resultObj = ExecRobocopy -src $bkfolder -dst $googleChromeDefaultPath -logfile $robocopylogfile
+        Log -LogPath $logPath -LogName $logName -LogString ("EXECUTE ROBOCOPY ResultCode={0} ResultMessage:{1} CopyFrom:[{2}] CopyTo:[{3}]" -f $resultObj.code, $resultObj.msg, $bkfolder, $googleChromeDefaultPath)
+        Log -LogPath $logPath -LogName $logName -LogString "***** リストア終了 *****"
+    }
+    else {
         # Google Chrome のブックマーク、履歴、設定をバックアップ
         while ($userinput = (Read-Host "バックアップを開始します。よろしいですか？(大文字小文字を区別します)[Y/n]")) {
             if ($userinput -ceq "Y") { 
@@ -69,29 +92,6 @@ process {
         $resultObj = ExecRobocopy -src $googleChromeDefaultPath -dst $bkfolder -logfile $robocopylogfile
         Log -LogPath $logPath -LogName $logName -LogString ("EXECUTE ROBOCOPY ResultCode={0} ResultMessage:{1} CopyFrom:[{2}] CopyTo:[{3}]" -f $resultObj.code, $resultObj.msg, $googleChromeDefaultPath, $bkfolder)
         Log -LogPath $logPath -LogName $logName -LogString "***** バックアップ終了 *****"
-    }
-    else {
-        # Google Chrome のブックマーク、履歴、設定をリストア
-        while ($userinput = (Read-Host "リストアを開始します。よろしいですか？(大文字小文字を区別します)[Y/n]")) {
-            if ($userinput -ceq "Y") {
-                break 
-            }
-            elseif ($userinput -ceq "n") { 
-                Log -LogPath $logPath -LogName $logName -LogString "***** ユーザー操作により処理を中止します *****"
-                exit 1
-            }
-            else { 
-                Write-Output "「Y」または「n」を入力してください。（大文字小文字を区別します）" 
-            }
-        }
-
-        Log -LogPath $logPath -LogName $logName -LogString "***** リストア開始 *****"
-        $bkfolder = (Get-ChildItem -Path (Join-Path (Get-CurrentDirectoryPath) $gcUserDataBackupPath) `
-                    | Sort-Object -Property Name -Descending | Select-Object FullName -First 1)
-        $robocopylogfile = Join-Path -Path $logPath -ChildPath ("re_{0}_robocopy.log" -f ((Get-Date -Format "yyyy-MM-dd").ToString()))
-        $resultObj = ExecRobocopy -src $bkfolder -dst $googleChromeDefaultPath -logfile $robocopylogfile
-        Log -LogPath $logPath -LogName $logName -LogString ("EXECUTE ROBOCOPY ResultCode={0} ResultMessage:{1} CopyFrom:[{2}] CopyTo:[{3}]" -f $resultObj.code, $resultObj.msg, $bkfolder, $googleChromeDefaultPath)
-        Log -LogPath $logPath -LogName $logName -LogString "***** リストア終了 *****"
     }
 }
 
