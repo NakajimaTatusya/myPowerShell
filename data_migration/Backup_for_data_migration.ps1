@@ -45,6 +45,9 @@ $DebugPreference = "Continue"
 $logPath = Join-Path (Get-CurrentDirectoryPath) "data_migration_logs"
 $logName = "BackupForDataMigration"
 
+Set-Variable restoreConfFolder -Option Constant -Value ".\restore_conf\"
+Set-Variable bkRootFolder -Option Constant -Value "backup_data_migration"
+
 
 function Read-DataMigrationConfig {
 <#
@@ -119,7 +122,7 @@ $Informations = @()
 $bkfldrnm = Get-BackupFolderName -ipv4 localhost
 
 # バックアップフォルダが無い場合作成する
-$backupfolder = Join-Path $parentdir "backup_data_migration" | Join-Path -ChildPath $bkfldrnm | Join-Path -ChildPath $dt
+$backupfolder = Join-Path $parentdir $bkRootFolder | Join-Path -ChildPath $bkfldrnm | Join-Path -ChildPath $dt
 if (!(Test-Path($backupfolder))) {
     # 戻り値をNULL破棄するために>$nullを使用、処理スピード最速
     New-Item $backupfolder -ItemType Directory > $null
@@ -181,7 +184,10 @@ $Informations `
     | Export-Csv -Path $outputfile -Encoding Default -NoTypeInformation
 
 # Restore設定ファイル出力
-$restorefile = Join-Path -Path ".\restore_conf\" -ChildPath ("restore_{0}_{1}.conf" -f $bkfldrnm, $dt)
+if (-not (Test-Path($restoreConfFolder))) {
+    New-Item -Path $restoreConfFolder -ItemType Directory > $null
+}
+$restorefile = Join-Path -Path $restoreConfFolder -ChildPath ("restore_{0}_{1}.conf" -f $bkfldrnm, $dt)
 $Informations `
     | Select-Object -Property @{Name = 'SourcePath'; Expression = {$_.DestinationPath}}, @{Name = 'DestinationPath'; Expression = {$_.SourcePath -replace $env:UserName, '{0}'}} `
     | Export-Csv -Path $restorefile -Encoding Default -NoTypeInformation
