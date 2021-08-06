@@ -1,4 +1,4 @@
-﻿
+﻿[CmdletBinding()]
 Param (
     [string]$parentdir,
     [string]$settingsfile
@@ -8,14 +8,21 @@ Import-Module -Name ..\library\AppCommon.psm1 -Force
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
-$WarningPreference = "Continue"
-$VerbosePreference = "Continue"
-$DebugPreference = "Continue"
+# $WarningPreference = "Continue"
+# $VerbosePreference = "Continue"
+# $DebugPreference = "Continue"
+
+# Logging
+$logPath = ".\data_migration_logs"
+$logName = "RestoreForDataMigration"
+
+Log -LogPath $logPath -LogName $logName -LogString "Start restore for data migration. *****"
+Log -LogPath $logPath -LogName $logName -LogString ("PowerShell current Version is {0}." -f $PSVersionTable.PSVersion)
 
 # パラメータチェック
 if ($settingsfile) {
     if (-not (Test-Path -Path $settingsfile)) {
-        Write-Error "設定ファイルが見つかりません"
+        Log -LogPath $logPath -LogName $logName -LogString "設定ファイルが見つかりません"
         exit -1
     }
 }
@@ -25,15 +32,17 @@ else {
     if ($wk) {
         $settingsfile = $wk.FullName
         if (-not (Test-Path -Path $settingsfile)) {
-            Write-Error "設定ファイルが見つかりません"
+            Log -LogPath $logPath -LogName $logName -LogString "設定ファイルが見つかりません"
             exit -1
         }
     }
     else {
-        Write-Error "設定ファイルが見つかりません"
+        Log -LogPath $logPath -LogName $logName -LogString "設定ファイルが見つかりません"
         exit -1
     }
 }
+Log -LogPath $logPath -LogName $logName -LogString ("設定ファイル：{0}を読み込みました。" -f $settingsfile)
+
 if ($parentdir) {
     if (!(Test-Path($parentdir))) {
         $parentdir = Get-CurrentDirectoryPath
@@ -42,14 +51,12 @@ if ($parentdir) {
 else {
     $parentdir = Get-CurrentDirectoryPath
 }
+Log -LogPath $logPath -LogName $logName -LogString ("リストア実行親フォルダ：{0}" -f $parentdir)
 
-# Logging
-$logPath = Join-Path (Get-CurrentDirectoryPath) "data_migration_logs"
-$logName = "RestoreForDataMigration"
-
+# フォルダ保持変数定義
+$Informations = @()
 
 Write-Verbose "CSV取り込み開始"
-$Informations = @()
 $configurations = Import-Csv $settingsfile -Encoding Default
 $configurations | Format-Table
 Write-Verbose ("取り込んだ行数:{0}行" -f $configurations.count)
@@ -79,10 +86,9 @@ $outputfile = Join-Path -Path $informationfolder -ChildPath ("復元先_{0}.csv"
 $Informations `
     | Select-Object -Property @{Name = '復元先'; Expression = {$_.SourcePath}}, @{Name = '合計フォルダ数'; Expression = {$_.TotalFolderCount}}, @{Name = '合計ファイル数'; Expression = {$_.TotalFileCount}}, @{Name = '合計ファイルサイズ'; Expression = {$_.TotalSize}} `
     | Export-Csv -Path $outputfile -Encoding Default -NoTypeInformation
+Log -LogPath $logPath -LogName $logName -LogString ("復元前のコピー先情報を{0}に出力しました。" -f $outputfile)
 
-Log -LogPath $logPath -LogName $logName -LogString "***** 復元前のコピー先情報を出力しました *****"
-
-while ($userinput = (Read-Host "レストアを開始します。よろしいですか？(大文字小文字を区別します)[Y/n]")) {
+while ($userinput = (Read-Host "リストアを開始します。よろしいですか？(大文字小文字を区別します)[Y/n]")) {
     if ($userinput -ceq "Y") { 
         break 
     }
@@ -104,7 +110,6 @@ if ($userinput -ceq "Y") {
     }
 }
 Log -LogPath $logPath -LogName $logName -LogString "***** 復元終了 *****"
-
 Log -LogPath $logPath -LogName $logName -LogString "End Restore for data migration. *****"
 
 exit 0

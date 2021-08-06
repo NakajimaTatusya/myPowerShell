@@ -4,7 +4,6 @@
 #>
 $TargetAlias = @(
     "MyDocuments"
-    "Desktop"
     "DesktopDirectory"
     "CommonDesktopDirectory"
     "Favorites"
@@ -12,6 +11,7 @@ $TargetAlias = @(
     "MyVideos"
     "MyPictures"
     "Download"
+    # "Desktop"
     # "UserProfile"
     # "Programs"
     # "Personal"

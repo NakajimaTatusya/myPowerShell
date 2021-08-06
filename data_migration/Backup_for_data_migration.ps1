@@ -25,6 +25,7 @@
     $arrays | ConvertTo-Json
     ConvertTo-Json $arrays
 #>
+[CmdletBinding()]
 param (
     [string]$parentdir,
     [string]$confpath
@@ -37,12 +38,12 @@ Import-Module -Name ..\library\AppCommon.psm1 -Force
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
-$WarningPreference = "Continue"
-$VerbosePreference = "Continue"
-$DebugPreference = "Continue"
+# $WarningPreference = "Continue"
+# $VerbosePreference = "Continue"
+# $DebugPreference = "Continue"
 
 # Logging
-$logPath = Join-Path (Get-CurrentDirectoryPath) "data_migration_logs"
+$logPath = ".\data_migration_logs"
 $logName = "BackupForDataMigration"
 
 Set-Variable restoreConfFolder -Option Constant -Value ".\restore_conf\"
@@ -76,6 +77,8 @@ function Read-DataMigrationConfig {
 
     Begin {
         $retval = @()
+        Write-Verbose ("個別バックアップフォルダ設定ファイル{0}を読み込みました。" -f $configfilepath)
+        Log -LogPath $logPath -LogName $logName -LogString ("設定ファイル{0}を読み込みました。" -f $configfilepath)
     }
 
     process {
@@ -83,18 +86,29 @@ function Read-DataMigrationConfig {
             $file = New-Object System.IO.StreamReader($configfilepath, [System.Text.Encoding]::GetEncoding("sjis"))
             while ($null -ne ($line = $file.ReadLine()))
             {
-                $retval += $line
+                Write-Debug ("個別対象フォルダ：{0}" -f $line)
+                if (Test-Path $line) {
+                    Write-Debug "Test Path result True."
+                    $retval += $line
+                }
+                else {
+                    Write-Warning ("個別対象フォルダ：{0}は存在しないフォルダーです。" -f $line)
+                    Log -LogPath $logPath -LogName $logName -LogString ("{0}は存在しないフォルダーです。" -f $line)
+                }
             }
         }
         catch {
-
+            Write-Error $_.Exception.Message
+            Log -LogPath $logPath -LogName $logName -LogString $_.Exception.Message
         }
         return $retval
     }
 }
 
 
-Log -LogPath $logPath -LogName $logName -LogString "start Backup for data migration. *****"
+Log -LogPath $logPath -LogName $logName -LogString "Start backup for data migration. *****"
+Log -LogPath $logPath -LogName $logName -LogString ("PowerShell current Version is {0}." -f $PSVersionTable.PSVersion)
+
 # 設定ファイル読み込み
 $IndividualTarget = @()
 if ($confpath) {
@@ -105,6 +119,7 @@ if ($confpath) {
 else {
     $IndividualTarget = Read-DataMigrationConfig
 }
+
 # 出力フォルダ設定
 if ($parentdir) {
     if (!(Test-Path($parentdir))) {
@@ -114,12 +129,13 @@ if ($parentdir) {
 else {
     $parentdir = Get-CurrentDirectoryPath
 }
+Log -LogPath $logPath -LogName $logName -LogString ("バックアップ親フォルダパス：{0}" -f $parentdir)
 
-Log -LogPath $logPath -LogName $logName -LogString ("PowerShell current Version is {0}." -f $PSVersionTable.PSVersion)
 $dt = (Get-Date -Format "yyyyMMdd_HHmmss").ToString()
-Write-Verbose $PSScriptRoot
-$Informations = @()
+Log -LogPath $logPath -LogName $logName -LogString ("スクリプト実行時ディレクトリパス：{0}" -f $PSScriptRoot)
+
 $bkfldrnm = Get-BackupFolderName -ipv4 localhost
+Log -LogPath $logPath -LogName $logName -LogString ("バックアップフォルダ名：{0}" -f $bkfldrnm)
 
 # バックアップフォルダが無い場合作成する
 $backupfolder = Join-Path $parentdir $bkRootFolder | Join-Path -ChildPath $bkfldrnm | Join-Path -ChildPath $dt
@@ -127,6 +143,9 @@ if (!(Test-Path($backupfolder))) {
     # 戻り値をNULL破棄するために>$nullを使用、処理スピード最速
     New-Item $backupfolder -ItemType Directory > $null
 }
+
+# バックアップフォルダ保持変数定義
+$Informations = @()
 
 # スペシャルフォルダ
 $names = [Environment+SpecialFolder]::GetNames([Environment+SpecialFolder])
