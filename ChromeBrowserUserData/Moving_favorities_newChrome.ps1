@@ -32,7 +32,7 @@ begin {
     Set-Variable googleChromePath -Option Constant -Value "Google\Chrome\User Data\Default"
     Set-Variable gcUserDataBackupPath -Option Constant -Value "google_chrome_userdata_backup"
 
-    $logPath = Join-Path (Get-CurrentDirectoryPath) "moving_chrome_logs"
+    $logPath = ".\moving_chrome_logs"
     $logName = "MovingFavoritiesNewChrome"
     Log -LogPath $logPath -LogName $logName -LogString "Start Moving favorities to new chrome. *****"
 }
