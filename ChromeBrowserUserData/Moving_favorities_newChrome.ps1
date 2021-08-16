@@ -17,6 +17,7 @@
     Author:  Tatsuya Nakajima
     Website: https://github.com/NakajimaTatusya/myPowerShell.git
 #>
+[cmdletbinding()]
 param ([switch]$RESTORE)
 
 begin {
@@ -24,9 +25,9 @@ begin {
 
     Set-StrictMode -Version Latest
     $ErrorActionPreference = "Stop"
-    $WarningPreference = "Continue"
-    $VerbosePreference = "Continue"
-    $DebugPreference = "Continue"
+    # $WarningPreference = "Continue"
+    # $VerbosePreference = "Continue"
+    # $DebugPreference = "Continue"
 
     Set-Variable googleChromePath -Option Constant -Value "Google\Chrome\User Data\Default"
     Set-Variable gcUserDataBackupPath -Option Constant -Value "google_chrome_userdata_backup"
