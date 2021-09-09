@@ -19,4 +19,5 @@ Get-NetFirewallRule -Name WINRM-HTTP-In-TCP | Set-NetFirewallRule -Enabled true 
 Write-Output "WinRMのサービス設定を有効にします。"
 winrm set winrm/config/service/auth '@{Basic="true"}'
 winrm set winrm/config/service '@{AllowUnencrypted="true"}'
+winrm get winrm/config
 } 3>&1 2>&1 >> $stdoutPath
