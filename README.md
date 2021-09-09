@@ -39,3 +39,7 @@ PowerShellスクリプト集
 | ChromeBrowserUserData\Moving_favorities_newChrome.ps1 | クロムブラウザのUser Data Defaultをバックアップ、リストアする |
 | ChromeBrowserUserData\Moving_favorities_restore.bat | リストア実行 |
 | windows_credential_manager.bat | windows 資格情報の追加、編集、削除、エクスポート/インポート GUIを呼び出すバッチコマンド |
+| \SettingWinRM\Enable_WinRM.bat | WinRM有効バッチ、管理者権限で実行のこと。PowerShellスクリプトファイルの実行許可も行う。 |
+| \SettingWinRM\Enable-WinRM-for-WIn10.ps1 | WinRM有効スクリプトファイル |
+| \SettingWinRM\Disable_WinRM.bat | WinRM無効バッチ、管理者権限で実行のこと。PowerShellスクリプトファイルの実行不許可にする。 |
+| \SettingWinRM\Disable-WinRM-for-WIn10.ps1 | WinRM無効スクリプトファイル |
