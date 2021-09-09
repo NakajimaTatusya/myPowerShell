@@ -54,4 +54,16 @@ Function Get-OfficeSoftwareInstallPath {
 
 $ComputerNames = @($env:COMPUTERNAME)
 $OfficeVersions = Get-OfficeSoftwareInstallPath -ComputerNames $ComputerNames
-$OfficeVersions | ForEach-Object { if (Test-Path($_)) { Write-Host $_ } }
+$OfficePath = ""
+$OfficeVersions | ForEach-Object { 
+    if (Test-Path($_)) { 
+        $OfficePath = $_ 
+        if ($OfficePath) {
+            $OfficeAppPath = Join-Path $OfficePath "POWERPNT.exe"
+            Write-Output $OfficeAppPath
+            if (Test-Path($OfficeAppPath)) {
+                Write-Output "Exists"
+            }
+        }
+    }
+}
