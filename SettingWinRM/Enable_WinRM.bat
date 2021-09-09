@@ -1,7 +1,7 @@
 @echo off
 
 echo ############################################################
-echo ### Setting for WinRM.                       ver.20210907###
+echo ### Setting for WinRM.                       ver.20210909###
 echo ### Author: Ricoh Japan YAMANASHI Soluetion.             ###
 echo ############################################################
 
