@@ -12,7 +12,7 @@ begin {
 
 process {
     $StorageURL = "https://hogehoge.blob.core.windows.net/foooo/"
-    $SASToken = ""
+    $SASToken = "shared access signature token here"
     
     if ($ops -eq 1) {
         $blobUploadParams = @{
