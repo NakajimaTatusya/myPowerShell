@@ -2,3 +2,4 @@
 ConfigureRemotingForAnsible.ps1
 *.log
 restore_*.conf
+*.iso
